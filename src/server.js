@@ -16,7 +16,7 @@ app.post("/", async (req, res) => {
         const { name, email } = req.body;
 
         const [result] = await pool.query(
-            "INSERT INTO usuarios (name, email) VALUES (?, ?)",
+            "INSERT INTO usuarios VALUES (?, ?)",
             [name, email]
         );
 
