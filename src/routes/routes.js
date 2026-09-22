@@ -1,32 +1,12 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import { pool } from "./config/db.js";
+const express = require('express');
+const router = express.Router();
+const controller = require('../controller/Controller');
 
-dotenv.config();
-
-const app = express();
-const PORT = Number(process.env.PORT) || 3002;
-
-app.use(cors());
-app.use(express.json());
-
-app.post("/", async (req, res) => {
-    try {
-        const { nome, email } = req.body;
-
-        const [result] = await pool.query(
-            "INSERT INTO usuarios (nome, email) VALUES (?, ?)",
-            [nome, email]
-        );
-
-        res.status(201).json({ id: result.insertId, nome, email });
-    } catch (e) {
-        res.status(500).json({ erro: "Falha ao criar usuario" });
-    }
+router.post("/", async (req, res) => {
+    controller.Cadastrar(req,res)
 });
 
-app.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const [rows] = await pool.query("SELECT * FROM usuarios");
         res.json(rows);
@@ -35,7 +15,7 @@ app.get("/", async (req, res) => {
     }
 });
 
-app.put("/:id", async (req, res) =>{
+router.put("/:id", async (req, res) =>{
     try {
         const { id } = req.params;
         const { nome, email } = req.body;
@@ -54,7 +34,7 @@ app.put("/:id", async (req, res) =>{
     }
 });
 
-app.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -73,6 +53,6 @@ app.delete("/:id", async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+export{
+    router
+}
